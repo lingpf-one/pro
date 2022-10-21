@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用 -->
+<mapper namespace="com.etc.ticket.dao.SessionDao">
+<!-- 在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象
+mapper.xml以statement为单位管理sql语句
+ -->
+<select id="querySessionForNumsNewsByType" resultType="session">
+    select  session_id,session_name,session_logo from t_session where session_type=#{param2}  order by session_time limit 0,#{param1}
+</select>
+
+
+    <resultMap id="mysss" type="mySessionDto">
+        <id property="session_id" column="session_id"></id>
+        <association property="session_type" column="session_type" javaType="type" select="com.etc.ticket.dao.TypeDao.queryTypeById"></association>
+        <collection property="session_prices" column="session_id" select="com.etc.ticket.dao.PriceDao.queryPriceBySessionId"></collection>
+    </resultMap>
+
+<select id="querySessionById" resultMap="mysss">
+    select * from t_session where session_id=#{sessionid}
+</select>
+</mapper>
+
